@@ -1,53 +1,54 @@
-# Hello World (Android, Kotlin)
+# MultiKamera (Android, Kotlin)
 
-Minimalna aplikacja Android, która wyświetla na środku ekranu napis **"Hello World!"**.
+Aplikacja łączy kilka telefonów w tej samej sieci Wi-Fi i nagrywa **jeden film z podziałem ekranu** z obrazem ze wszystkich kamer.
 
 ## Pobierz
 
-**[⬇ Pobierz HelloWorld.apk (najnowsza wersja)](https://github.com/BekaPeka-GIT/AndroidTestApp/releases/latest/download/HelloWorld.apk)**
+**[⬇ Pobierz MultiKamera.apk (najnowsza wersja)](https://github.com/BekaPeka-GIT/AndroidTestApp/releases/latest/download/MultiKamera.apk)**
 
-Wszystkie wersje: [Releases](https://github.com/BekaPeka-GIT/AndroidTestApp/releases). Na telefonie otwórz pobrany plik i zezwól na instalację z nieznanych źródeł.
+Zainstaluj ten sam plik na każdym telefonie. Na telefonie otwórz pobrany plik i zezwól na instalację z nieznanych źródeł.
 
-- Język: Kotlin
-- Build: Gradle (Kotlin DSL), Android Gradle Plugin 8.7.3, Gradle 8.11.1 (wrapper)
-- Pakiet: `com.example.helloworld`
-- minSdk 21 (Android 5.0), targetSdk / compileSdk 35
-- Bez zależności od AndroidX: `MainActivity` dziedziczy po `android.app.Activity`
+## Jak używać
 
-## Struktura
+1. Wszystkie telefony podłącz do tej samej sieci Wi-Fi (może to być też hotspot jednego z nich).
+2. Na dodatkowych telefonach uruchom aplikację i wybierz **Kamera**. Ekran pokaże podgląd i adres IP.
+3. Na głównym telefonie wybierz **Reżyser**. Kamery z sieci łączą się same i pojawiają w podglądzie.
+   Jeśli któraś się nie pojawi, użyj **Połącz po IP** i wpisz adres z ekranu kamery.
+4. Naciśnij **Nagrywaj**, a potem **Stop**. Film trafia do galerii: `Filmy/MultiKamera/MultiKamera_RRRRMMDD_GGMMSS.mp4`.
 
-```
-app/src/main/AndroidManifest.xml
-app/src/main/java/com/example/helloworld/MainActivity.kt
-app/src/main/res/values/strings.xml
-app/build.gradle.kts
-build.gradle.kts, settings.gradle.kts, gradle.properties
-gradlew, gradlew.bat, gradle/wrapper/
-scripts/build-without-gradle.sh   (awaryjny build bez Gradle, Linux)
-```
+Szczegóły:
+- Film: MP4 1280×720, H.264, 30 kl./s, dźwięk AAC z mikrofonu Reżysera.
+- Układ: 1 kamera na cały ekran, 2 obok siebie, 3–4 w siatce 2×2, więcej w większej siatce. Obraz nie jest przycinany (czarne pasy).
+- Reżyser może używać własnej kamery albo ją wyłączyć (wtedy w filmie są tylko zdalne kamery).
+- Każdą kamerę można przełączyć na przednią lub tylną.
+- Kamery wysyłają podgląd 960×540 (JPEG, ok. 20 kl./s); jakość zdalnego obrazu zależy od Wi-Fi.
+
+## Jak to działa
+
+| Plik | Rola |
+|---|---|
+| `MainActivity.kt` | wybór roli: Reżyser albo Kamera |
+| `CameraActivity.kt`, `CameraLink.kt` | Kamera: serwer TCP, wysyła klatki JPEG do Reżysera |
+| `Discovery.kt` | wykrywanie kamer w sieci (mDNS / NSD, usługa `_multikamera._tcp`) |
+| `DirectorActivity.kt`, `RemoteCamera.kt` | Reżyser: łączy się z kamerami, odbiera klatki |
+| `Compositor.kt` | rysuje podział ekranu (podgląd i film) |
+| `SplitScreenRecorder.kt` | koduje obraz (MediaCodec H.264 przez Canvas) i dźwięk (AAC) do MP4 |
+| `CameraRig.kt`, `FrameSource.kt` | obsługa kamery telefonu (CameraX) i najnowszych klatek |
+| `Gallery.kt` | zapis gotowego filmu w galerii |
+
+- Pakiet: `com.example.multikamera`, minSdk 23 (Android 6.0), targetSdk / compileSdk 35
+- Zależności: AndroidX CameraX 1.4, Activity
 
 ## Budowanie
-
-### Android Studio
-Otwórz folder projektu (File > Open). Studio samo pobierze brakujące SDK. Uruchom przyciskiem Run.
-
-### Z linii poleceń
-Wymaga zainstalowanego Android SDK (zmienna `ANDROID_HOME` lub plik `local.properties` z `sdk.dir=...`).
 
 ```
 ./gradlew assembleDebug        # Linux/macOS
 gradlew.bat assembleDebug      # Windows
 ```
 
-APK: `app/build/outputs/apk/debug/app-debug.apk`
-
-### Instalacja na telefonie
-```
-adb install app/build/outputs/apk/debug/app-debug.apk
-```
-albo skopiuj plik APK na telefon i otwórz go (trzeba zezwolić na instalację z nieznanych źródeł).
+APK: `app/build/outputs/apk/debug/app-debug.apk`. Można też otworzyć projekt w Android Studio.
 
 ## CI
 
-GitHub Actions (`.github/workflows/android.yml`) buduje debug APK przy każdym pushu na `main` i przy pull requestach. Gotowy plik jest w zakładce Actions, w artefakcie `app-debug`.
+GitHub Actions (`.github/workflows/android.yml`) buduje debug APK przy każdym pushu na `main` i przy pull requestach (artefakt `app-debug`).
 Każdy push na `main` publikuje APK w GitHub Release `v<versionName>` (wersja z `app/build.gradle.kts`). Żeby wydać nową wersję, podnieś `versionName` i `versionCode`.
