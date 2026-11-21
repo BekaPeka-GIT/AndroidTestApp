@@ -50,4 +50,4 @@ albo skopiuj plik APK na telefon i otwórz go (trzeba zezwolić na instalację z
 ## CI
 
 GitHub Actions (`.github/workflows/android.yml`) buduje debug APK przy każdym pushu na `main` i przy pull requestach. Gotowy plik jest w zakładce Actions, w artefakcie `app-debug`.
-Po wypchnięciu tagu `v*` (np. `git tag v1.1 && git push origin v1.1`) APK jest publikowany jako GitHub Release.
+Każdy push na `main` publikuje APK w GitHub Release `v<versionName>` (wersja z `app/build.gradle.kts`). Żeby wydać nową wersję, podnieś `versionName` i `versionCode`.
