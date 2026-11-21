@@ -2,6 +2,12 @@
 
 Minimalna aplikacja Android, która wyświetla na środku ekranu napis **"Hello World!"**.
 
+## Pobierz
+
+**[⬇ Pobierz HelloWorld.apk (najnowsza wersja)](https://github.com/BekaPeka-GIT/AndroidTestApp/releases/latest/download/HelloWorld.apk)**
+
+Wszystkie wersje: [Releases](https://github.com/BekaPeka-GIT/AndroidTestApp/releases). Na telefonie otwórz pobrany plik i zezwól na instalację z nieznanych źródeł.
+
 - Język: Kotlin
 - Build: Gradle (Kotlin DSL), Android Gradle Plugin 8.7.3, Gradle 8.11.1 (wrapper)
 - Pakiet: `com.example.helloworld`
@@ -44,3 +50,4 @@ albo skopiuj plik APK na telefon i otwórz go (trzeba zezwolić na instalację z
 ## CI
 
 GitHub Actions (`.github/workflows/android.yml`) buduje debug APK przy każdym pushu na `main` i przy pull requestach. Gotowy plik jest w zakładce Actions, w artefakcie `app-debug`.
+Po wypchnięciu tagu `v*` (np. `git tag v1.1 && git push origin v1.1`) APK jest publikowany jako GitHub Release.
