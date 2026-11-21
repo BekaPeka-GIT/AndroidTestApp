@@ -37,6 +37,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp app/build/outputs/apk/debug/app-debug.apk HelloWorld.apk
-          gh release create "${GITHUB_REF_NAME}" HelloWorld.apk \
-            --title "Hello World ${GITHUB_REF_NAME}" \
-            --notes "Debug APK zbudowany automatycznie przez GitHub Actions."
+          gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1 || \
+            gh release create "${GITHUB_REF_NAME}" \
+              --title "Hello World ${GITHUB_REF_NAME}" \
+              --notes "Debug APK zbudowany automatycznie przez GitHub Actions."
+          gh release upload "${GITHUB_REF_NAME}" HelloWorld.apk --clobber
