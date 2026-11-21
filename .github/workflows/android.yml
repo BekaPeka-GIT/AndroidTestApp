@@ -43,9 +43,9 @@ jobs:
           else
             TAG="v$(sed -n 's/.*versionName *= *"\(.*\)".*/\1/p' app/build.gradle.kts)"
           fi
-          cp app/build/outputs/apk/debug/app-debug.apk HelloWorld.apk
+          cp app/build/outputs/apk/debug/app-debug.apk MultiKamera.apk
           gh release view "$TAG" >/dev/null 2>&1 || \
             gh release create "$TAG" --target "$GITHUB_SHA" \
-              --title "Hello World $TAG" \
-              --notes "Debug APK zbudowany automatycznie przez GitHub Actions."
-          gh release upload "$TAG" HelloWorld.apk --clobber
+              --title "MultiKamera $TAG (wersja testowa)" \
+              --notes-file .github/release-notes.md --latest
+          gh release upload "$TAG" MultiKamera.apk --clobber
