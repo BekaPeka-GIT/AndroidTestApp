@@ -71,16 +71,22 @@ class CameraLink(private val listener: Listener) {
 
     /** Wysyła wiadomość; zwraca false, gdy nie ma połączenia. */
     private fun send(block: (DataOutputStream) -> Unit): Boolean {
-        synchronized(lock) {
-            val o = out ?: return false
-            return try {
-                block(o)
-                o.flush()
-                true
-            } catch (e: IOException) {
-                false
+        val ok = synchronized(lock) {
+            val o = out
+            if (o == null) {
+                null
+            } else {
+                try {
+                    block(o)
+                    o.flush()
+                    true
+                } catch (e: IOException) {
+                    false
+                }
             }
-        }.also { ok -> if (!ok && out != null) closeClient(notify = true) }
+        } ?: return false
+        if (!ok) closeClient(notify = true)
+        return ok
     }
 
     fun sendFrame(rotation: Int, jpeg: ByteArray): Boolean = send {
