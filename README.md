@@ -6,7 +6,9 @@ Aplikacja łączy kilka telefonów w tej samej sieci Wi-Fi i nagrywa **jeden fil
 
 **[⬇ Pobierz MultiKamera.apk (najnowsza wersja)](https://github.com/BekaPeka-GIT/AndroidTestApp/releases/latest/download/MultiKamera.apk)**
 
-Zainstaluj ten sam plik na każdym telefonie. Na telefonie otwórz pobrany plik i zezwól na instalację z nieznanych źródeł.
+Wersja testowa **0.0.1**. Zainstaluj ten sam plik na każdym telefonie (Android 6.0 lub nowszy). Na telefonie otwórz pobrany plik i zezwól na instalację z nieznanych źródeł.
+
+Problemy zgłaszaj w [Issues](https://github.com/BekaPeka-GIT/AndroidTestApp/issues): podaj model telefonu, wersję Androida i co się stało.
 
 ## Jak używać
 
